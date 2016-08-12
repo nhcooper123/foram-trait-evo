@@ -19,6 +19,13 @@ modeltype = speciationextinction
 treefile = bimorph.tre
 # File name of the phylogenetic tree to be analyzed
 
+checkUltrametric = 0
+# Allows BAMM to run on nonultrametric trees
+
+extinctionProbMax = 0.99999
+# Controls the overall probability the tree will go extinct. 
+# Setting it to more digits allows for better estimates.
+
 runInfoFilename = run_info.txt
 # File name to output general information about this run
 
@@ -89,12 +96,11 @@ muInitPrior = 1.0
 lambdaIsTimeVariablePrior = 1
 # Prior (probability) of the time mode being time-variable (vs. time-constant)
 
-preservationRatePrior = 0.5
 ################################################################################
 # MCMC SIMULATION SETTINGS & OUTPUT OPTIONS
 ################################################################################
 
-numberOfGenerations = 5000
+numberOfGenerations = 10000
 # Number of generations to perform MCMC simulation
 
 mcmcOutfile = mcmc_out.txt
@@ -239,3 +245,26 @@ segLength = 0.02
 # If the value is greater than the branch length (e.g., you have a branch of
 # length < 0.5 in the preceding example) BAMM will not break the branch into
 # segments but use the mean rate across the entire branch.
+
+#################################################################################
+# FOSSIL BAMM PRIORS & PARAMETERS
+#################################################################################
+# Tree wide preservation rate
+preservationRatePrior = 1.0
+preservationRateInit = 0.5
+updateRatePreservationRate = 0.5
+updatePreservationRateScale = 1.0
+
+# observationTime is kind of tricky, and maybe one of the more influential parameters for overall results. 
+# It specifies the total amount of evolutionary time where the clade *could have been* observed. 
+# So if you have a crown clade with fossil members, this can just be the root age of the tree. 
+# If you have stem lineages sticking out the bottom, this becomes a bit trickier. 
+# If your final output has a lot of regimes with crazy rates and near-1 relative extinction levels, 
+# this parameter's likely to blame and needs to be modified.
+observationTime = 100
+
+# the number of fossil occurrences is the *total number of observed fossils*. 
+# Not just the number of extinct tips. So if you have a 3 taxon-tree, 
+# with one extinct tip, but you have fossil representatives of the extant lineages, too, they count! 
+# This is the main value fossilBAMM uses to estimate psi.
+numberOccurrences = 339
