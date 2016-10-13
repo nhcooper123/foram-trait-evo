@@ -31,7 +31,9 @@ all.control.files <- function(..., type = type) {
     # Need to name control files sensibly and/or place in separate folder
     filename <- "control.txt"
     generateControlFile_fossils(file = filename, type = type,
-                                params = as.list(combinations[i, 1:nvars]))
+                                params = as.list(c(combinations[i, 1:nvars]), 
+                                                 outName = filename)
+    write.table(control.files.txt) # Create a table of all the options in each file? Migth be easier than naming
   }
 }
 
