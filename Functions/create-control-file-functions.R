@@ -1,7 +1,6 @@
-@ For a given row, create a string in the form "variable name = value,"
-@ Input is row of a dataframe created by find.all.combinations
-@ Output is a string to add to dataframe
+# Functions to create flexible control files for BAMM analyses
 
+# For a given row, create a string in the form "variable name = value,"
 create.parameters.string <- function(combinations.row) {
   # Create empty string
   params <- c() 
@@ -15,3 +14,21 @@ create.parameters.string <- function(combinations.row) {
   # Output the string with parameter combinations for the row
   return(params)
 }
+
+# Create strings in the form "variable name = value," for whole dataframe 
+# and add to parameters column in the dataframe
+create.parameters.column <- function(combinations.dataframe) {
+  # Extract number of rows in dataframe
+  nrows <- nrow(combinations.dataframe)
+  # Create empty column to fill with parameter combinations
+  parameters <- array(dim = c(nrows,1))
+  # Loop through each row to create and store parameter combinations
+  for(row.number in 1:nrows) {
+    row <- slice(combinations.dataframe, row.number)
+    parameters[row.number,] <- create.parameters.string(row)
+  }
+  # Put parameters into the dataframe and return
+  combinations.dataframe$parameters <- parameters
+  return(combinations.dataframe)         
+}
+
