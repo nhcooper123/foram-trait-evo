@@ -3,7 +3,7 @@
 # Natalie Cooper
 
 # Get all possible parameter combinations from an input list of possible values
-all.parameter.combinations <- function(...){
+all.parameter.combinations <- function(...) {
   # Get list of variable names entered into function
   variables <- substitute(list(...))[-1]
   var.names <- sapply(variables, deparse)
