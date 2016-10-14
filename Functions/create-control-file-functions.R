@@ -5,12 +5,9 @@
 # Get all possible parameter combinations from an input list of possible values
 all.parameter.combinations <- function(...){
   # Get list of variable names entered into function
-  # This may vary depending on what we want to enter
   variables <- substitute(list(...))[-1]
   var.names <- sapply(variables, deparse)
-
-  # Use expand.grid to get all combinations of parameters possible and create dataframe
-  # Name using input names
+  # Use expand.grid to get all combinations of parameters possible and add names
   all.options <- expand.grid(...)
   names(all.options) <- var.names
   return(all.options)
