@@ -1,18 +1,18 @@
-# Functions to create flexible control files for BAMM analyses
+# Functions to create multiple control files for BAMM analyses
+# Requires 
+# Natalie Cooper
 
 # Get all possible parameter combinations from an input list of possible values
-all.parameter.combinations <- function(treefile, ...){
+all.parameter.combinations <- function(...){
   # Get list of variable names entered into function
   # This may vary depending on what we want to enter
-  # May need to modify to add tree file and other vital variables to make requirment???####
   variables <- substitute(list(...))[-1]
-  var.names <- c(treefile, sapply(variables, deparse)
+  var.names <- sapply(variables, deparse)
 
   # Use expand.grid to get all combinations of parameters possible and create dataframe
   # Name using input names
   all.options <- expand.grid(...)
   names(all.options) <- var.names
-  
   return(all.options)
 }
 
