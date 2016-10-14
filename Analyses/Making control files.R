@@ -33,6 +33,7 @@ globalSamplingFraction <- 1.0
 # sampleProbsFilename = sample_probs.txt
 
 #--------------------------------------------------
+# Event configuration
 #--------------------------------------------------
 
 validateEventConfiguration <- c(0, 1)
@@ -42,82 +43,80 @@ validateEventConfiguration <- c(0, 1)
 # The default value is 0
 
 #--------------------------------------------------
-# BAMM process priors
+# BAMM priors
 #--------------------------------------------------
-# We recommend that researchers consider performing BAMM analyses using several values of
-# including expectedNumberOfShifts = 100, to assess whether their results are robust to
-# the prior
-expectedNumberOfShifts <- c(1,2,3,4,5,100)
+# Requires several options to assess whether results are robust to the prior
+expectedNumberOfShifts <- c(1:10, 25, 50, 100)
 
+# Extract appropriate priors using BAMMtools
+priors <- setBAMMpriors(treefile, outfile = NULL)
 
-# Extract appropriate priors
+lambdaInit <- as.numeric(priors['lambdaInitPrior']),
+lambdaShift <- as.numeric(priors['lambdaShiftPrior']),
+muInit <- as.numeric(priors['muInitPrior'])
 
-
-
-
-lambdaInitPrior = as.numeric(priors['lambdaInitPrior']),
-lambdaShiftPrior = as.numeric(priors['lambdaShiftPrior']),
-muInitPrior = as.numeric(priors['muInitPrior']),
+# Select a set of ten priors ranging from half the recommended value to twice 
+# the recommended value, in ten steps. This is arbitrary but give a variety
+# of values for the priors
+lambdaInitPrior <- seq(from = lambdaInit/2, to = lambdaInit*2, length = 10)
+lambdaShiftPrior <- seq(from = lambdaShift/2, to = lambdaShift*2, length = 10)
+muInitPrior <- seq(from = muInit/2, to = muInit*2, length = 10)
 
 #--------------------------------------------------
 # MCMC settings
 #--------------------------------------------------
-
-numberOfGenerations = 10000
+# I've gone for high numbers here to help ensure convergence
 # Number of generations to perform MCMC simulation
+numberOfGenerations <- 10^9
 
-mcmcWriteFreq = 1000
 # Frequency in which to write the MCMC output to a file
+mcmcWriteFreq <- 10^6
 
-eventDataWriteFreq = 1000
 # Frequency in which to write the event data to a file
+eventDataWriteFreq <- 10^6
 
-printFreq = 100
 # Frequency in which to print MCMC status to the screen
+printFreq <- 10^5
 
-acceptanceResetFreq = 1000
 # Frequency in which to reset the acceptance rate calculation
 # The acceptance rate is output to both the MCMC data file and the screen
+acceptanceResetFreq <- 10^6
 
-
-
-################################################################################
+#-----------------------------------
 # OPERATORS: MCMC SCALING OPERATORS
-################################################################################
+#-----------------------------------
+# I have chosen an arbitrary range of these to determine effects on convergence etc.
 
-updateLambdaInitScale = 2.0
 # Scale parameter for updating the initial speciation rate for each process
+updateLambdaInitScale <- 1:3 # default = 2.0
 
-updateLambdaShiftScale = 0.1
 # Scale parameter for the exponential change parameter for speciation
+updateLambdaShiftScale = c(0.1, 0.2, 0.5) # default = 0.1
 
-updateMuInitScale = 2.0
 # Scale parameter for updating initial extinction rate for each process
+updateMuInitScale <- 1:3 # default = 2.0
 
-updateEventLocationScale = 0.05
 # Scale parameter for updating LOCAL moves of events on the tree
 # This defines the width of the sliding window proposal
 # This parameter is specified in units of “total tree depth” to minimize scale
-# dependence. Suppose you have a tree of age T (T is the time of the root node). 
-# Parameter updateEventLocationScale is in units of T. A value of 0.05 means that the 
-# uniform distribution for event location changes has a width of 0.05T.
-# ??? TINKER ???
- 
-updateEventRateScale = 4.0
+# dependence. 
+updateEventLocationScale <- c(0.01, 0.05, 0.1) # default = 0.05
+
 # Scale parameter (proportional shrinking/expanding) for updating
-# the rate parameter of the Poisson process 
-
-
-################################################################################
+# the rate parameter of the Poisson process
+updateEventRateScale <- c(2.0, 4.0, 6.0) # default = 4
+ 
+#-----------------------------------
 # OPERATORS: MCMC MOVE FREQUENCIES
-################################################################################
+#-----------------------------------
 
-updateRateEventNumber = 0.1
 # Relative frequency of MCMC moves that change the number of events
+updateRateEventNumber = 0.1
 
-updateRateEventPosition = 1
 # Relative frequency of MCMC moves that change the location of an event on the
 # tree. 
+updateRateEventPosition = 1
+
 
 updateRateEventRate = 1
 # Relative frequency of MCMC moves that change the rate at which events occur 
@@ -159,34 +158,23 @@ initialNumberEvents = 0
 # Initial number of non-root processes
  
 
-################################################################################
+#-------------------------------------------------------------
 # METROPOLIS COUPLED MCMC
-################################################################################
-# In the tools directory of the BAMM GitHub repository, we have provided an R script,
-# chainSwapPercent.R, and a bash script (OS X and Linux only), chain‐swap‐percent.sh, to 
-# help determine the optimal value for deltaT for a specific data set.
-
-numberOfChains = 4
+#-------------------------------------------------------------
+# For now using defaults for number of chains and swap period
 # Number of Markov chains to run
+# numberOfChains <- 4
+# Number of generations in which to propose a chain swap
+# swapPeriod <- 1000
 
-deltaT = 0.01
 # Temperature increment parameter. This value should be > 0
 # The temperature for the i-th chain is computed as 1 / [1 + deltaT * (i - 1)]
+# Can use code to optimise this
+deltaT <- c(0.01, 0.05, 0.1, 0.2) # default for small trees = 0.1
 
-swapPeriod = 1000
-# Number of generations in which to propose a chain swap
-
-chainSwapFileName = chain_swap.txt
-# File name in which to output data about each chain swap proposal.
-# The format of each line is [generation],[rank_1],[rank_2],[swap_accepted]
-# where [generation] is the generation in which the swap proposal was made,
-# [rank_1] and [rank_2] are the chains that were chosen, and [swap_accepted] is
-# whether the swap was made. The cold chain has a rank of 1.
-
-
-################################################################################
+#--------------------------------
 # NUMERICAL AND OTHER PARAMETERS
-################################################################################
+#--------------------------------
 
 minCladeSizeForShift = 1
 # Allows you to constrain location of possible rate-change events to occur
@@ -205,9 +193,9 @@ segLength = 0.02
 # segments but use the mean rate across the entire branch.
 # ??? TINKER ???
 
-#################################################################################
+#--------------------------------
 # FOSSIL BAMM PRIORS & PARAMETERS
-#################################################################################
+#--------------------------------
 # Tree wide preservation rate
 preservationRatePrior = 1.0
 preservationRateInit = 0.5
@@ -232,7 +220,7 @@ numberOccurrences = 339
 
 # Generate control files
 
-setwd("ControlFiles/")
+setwd("BAMM/")
 
 all.control.files(type = "diversification", prefix = "control", suffix = "Oct16", 
                    treefile, observationTime, numberOfGenerations)
