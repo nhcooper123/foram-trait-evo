@@ -3,6 +3,8 @@
 # Functions, Data, ControlFiles, 
 # Natalie Cooper
 
+#setwd("~/Projects/foram-trait-evo")
+
 # Source functions needed
 source("Functions/control_file_functions.R")
 source("Functions/generateControlFile_fossils.R")
@@ -18,7 +20,7 @@ tree <- read.tree("Data/bimorph.tre")
 #--------------------------------------------------
 
 # Name of the tree or trees to use
-treefile <- tree
+treefile <- "bimorph.tre"
 
 #--------------------------------------------------
 # Sampling
@@ -208,7 +210,7 @@ updatePreservationRateScale = 1.0
 # If you have stem lineages sticking out the bottom, this becomes a bit trickier. 
 # If your final output has a lot of regimes with crazy rates and near-1 relative extinction levels, 
 # this parameter's likely to blame and needs to be modified.
-observationTime = 100
+observationTime <- c(100, 200)
 
 # the number of fossil occurrences is the *total number of observed fossils*. 
 # Not just the number of extinct tips. So if you have a 3 taxon-tree, 
@@ -217,13 +219,9 @@ observationTime = 100
 numberOccurrences = 339
 
 
-
 # Generate control files
 
-#setwd("ControlFiles/")
+setwd("BAMM/ControlFiles/")
 
 all.control.files(type = "diversification", prefix = "control", suffix = "Oct16", 
-                   treefile, observationTime, numberOfGenerations)
-
-all.control.files(type = "diversification", prefix = "control", suffix = "Oct16", 
-                   treefile)
+                   treefile, observationTime, numberOccurrences, numberOfGenerations)
