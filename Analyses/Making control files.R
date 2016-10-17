@@ -220,8 +220,10 @@ numberOccurrences = 339
 
 # Generate control files
 
-setwd("BAMM/")
+#setwd("ControlFiles/")
 
 all.control.files(type = "diversification", prefix = "control", suffix = "Oct16", 
                    treefile, observationTime, numberOfGenerations)
 
+all.control.files(type = "diversification", prefix = "control", suffix = "Oct16", 
+                   treefile)
