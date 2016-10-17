@@ -63,7 +63,7 @@ all.control.files <- function(type = type, prefix = "control", suffix = "", ...)
   }
   
   # Output the list of control file names and details
-  write.table(file = paste("controlfiles_", suffix, ".txt", sep = ""), control.details, sep = "\t", row.names = FALSE, 
+  write.table(file = paste("controlfiles_", suffix, ".csv", sep = ""), control.details, sep = ",", row.names = FALSE, 
               col.names = TRUE, quote = FALSE) 
 }
 
