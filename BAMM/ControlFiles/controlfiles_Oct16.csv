@@ -1,0 +1,3 @@
+treefile,observationTime,numberOfGenerations,numberOccurrences,control.file.name
+bimorph.tre,100,1e+05,339,control_1.txt
+bimorph.tre,200,1e+05,339,control_2.txt

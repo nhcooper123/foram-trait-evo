@@ -1,0 +1,2 @@
+generation,N_shifts,logPrior,logLik,eventRate,preservationRate,acceptRate
+0,0,0.120855,-4307.47,1,0.5,0

@@ -1,0 +1,2 @@
+generation,leftchild,rightchild,abstime,lambdainit,lambdashift,muinit,mushift
+0,t479,t1,0,0.032,0,0.005,0
